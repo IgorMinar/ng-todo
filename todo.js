@@ -26,30 +26,60 @@ app.factory('Item', function($resource, apiKey) {
 
 app.controller('App', function($scope, Item) {
 
-  $scope.items = Item.query();
+	$scope.editedItem = null;
+
+  var items = Item.query();
+  $scope.allItems = items;
+  $scope.items = items;
+	$scope.currScope = 'all';
 
   $scope.add = function() {
     var item = new Item({text: $scope.newText});
-    $scope.items.push(item);
+    items.push(item);
     $scope.newText = '';
 
     // save to mongolab
     item.$save();
   };
 
+	$scope.startEditing = function(item){
+			item.editing=true;
+			$scope.editedItem = item;
+	}
+			
+	$scope.doneEditing = function(item){
+			item.editing=false;
+			$scope.editedItem = null;
+			item.$update();
+	}
+
   $scope.remaining = function() {
-    return $scope.items.reduce(function(count, item) {
+    return items.reduce(function(count, item) {
       return item.done ? count : count + 1;
     }, 0);
   };
 
+  $scope.showRemaining = function() {
+    $scope.items = items.filter(function(item) {
+      return !item.done;
+    });
+  };
+
+  // event handler
+  $scope.showCompleted = function() {
+    $scope.items = items.filter(function(item) {
+      return item.done;
+    });
+  };
+
   $scope.archive = function() {
-    $scope.items = $scope.items.filter(function(item) {
+    $scope.allItems = $scope.items = items = items.filter(function(item) {
       if (item.done) {
         item.$remove();
         return false;
       }
       return true;
     });
+		if ($scope.currScope == 'done') $scope.currScope = 'all';
   };
 });
