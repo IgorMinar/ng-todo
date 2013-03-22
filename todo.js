@@ -27,6 +27,7 @@ app.factory('Item', function($resource, apiKey) {
 app.controller('App', function($scope, Item) {
 
   $scope.items = Item.query();
+	$scope.editedItem = null;
 
   $scope.add = function() {
     var item = new Item({text: $scope.newText});
@@ -36,6 +37,17 @@ app.controller('App', function($scope, Item) {
     // save to mongolab
     item.$save();
   };
+
+	$scope.startEditing = function(item){
+			item.editing=true;
+			$scope.editedItem = item;
+	}
+			
+	$scope.doneEditing = function(item){
+			item.editing=false;
+			$scope.editedItem = null;
+			item.$update();
+	}
 
   $scope.remaining = function() {
     return $scope.items.reduce(function(count, item) {

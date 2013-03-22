@@ -12,6 +12,9 @@
       color: gray;
       text-decoration: line-through;
     }
+		.icon-pencil {
+			cursor: pointer;
+		}
   </style>
 </head>
 <body ng-app="todo" ng-controller="App" class="well">
@@ -25,7 +28,15 @@
 
 <ul class="unstyled">
   <li ng-repeat="item in items" class="done-{{item.done}}">
-    <input type="checkbox" ng-model="item.done" ng-change="item.$update()"> {{item.text}}</li>
+    <input type="checkbox" ng-model="item.done" ng-change="item.$update()">
+    <span ng-dblclick="startEditing(item);">
+				<span ng-hide="item.editing">{{item.text}} <i class="icon-pencil" title="Edit item" ng-click="startEditing(item)"></i></span>
+				<form ng-show="item.editing" ng-submit="doneEditing(item)">
+						<input ng-model="item.text" ng-blur="doneEditing(item)" ng-focus="item == editedItem" />
+						<button ng-click="doneEditing(item)">Save</button>
+				</form>
+		</span>
+	</li>
 </ul>
 
 <form>
