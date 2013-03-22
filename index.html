@@ -15,6 +15,9 @@
 		.icon-pencil {
 			cursor: pointer;
 		}
+		.active {
+			color: rgb(241, 73, 73);
+		}
   </style>
 </head>
 <body ng-app="todo" ng-controller="App" class="well">
@@ -22,8 +25,14 @@
 <h1>Things To Do</h1>
 
 <p>
-  Remaining <strong>{{remaining()}}</strong> of <strong>{{items.length}}</strong>.
-  [ <a ng-click="archive()">archive</a> ]
+  Remaining <a href ng-click="showRemaining()">{{remaining()}}</a>	</strong> of <strong><a href ng-click="items = allItems">{{allItems.length}}</a></strong>.
+  [ <a href ng-class="{active: currScope == 'all'}" 
+						ng-click="currScope = 'all'; items = allItems">all</a> 
+  | <a href ng-class="{active: currScope == 'rem'}" 
+						ng-click="currScope = 'rem'; showRemaining()">remaining</a> 
+  | <a href ng-class="{active: currScope == 'done'}" 
+						ng-click="currScope = 'done'; showCompleted()">completed</a> 
+	| <a href ng-click="archive()">archive</a> ]
 </p>
 
 <ul class="unstyled">
